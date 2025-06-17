@@ -442,6 +442,16 @@ void ContractCompiler::appendFunctionSelector(ContractDefinition const& _contrac
 	m_context << u256(4) << Instruction::CALLDATASIZE << Instruction::LT;
 	m_context.appendConditionalJumpTo(notFoundOrReceiveEther);
 
+	std::cerr << "---- begin ----\n";
+	for (const auto &hash_fptr : interfaceFunctions) {
+		const auto &hash = hash_fptr.first;
+		const auto &fptr = hash_fptr.second;
+
+		const auto &fname = fptr->declaration().name();
+
+		std::cerr << "[" << hash << "] : " << fptr->declaration().name() << "\n";
+	}
+
 	// retrieve the function signature hash from the calldata
 	if (!interfaceFunctions.empty())
 	{
@@ -551,6 +561,10 @@ void ContractCompiler::appendFunctionSelector(ContractDefinition const& _contrac
 		// Consumes the return parameters.
 		appendReturnValuePacker(functionType->returnParameterTypes(), _contract.isLibrary());
 	}
+
+	std::cerr << "---- asm ----\n";
+	std::cerr << m_context.assembly() << "\n";
+	std::cerr << "---- end ----\n";
 }
 
 void ContractCompiler::appendReturnValuePacker(TypePointers const& _typeParameters, bool _isLibrary)
