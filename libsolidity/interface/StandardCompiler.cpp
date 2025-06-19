@@ -1941,8 +1941,8 @@ std::string StandardCompiler::compile(std::string const& _input) noexcept
 	//	std::cout << "Input: " << solidity::util::jsonPrettyPrint(input) << std::endl;
 	Json output = compile(input);
 	// std::cout << "Output: " << solidity::util::jsonPrettyPrint(output) << std::endl;
-	std::cerr << "### SOLC ###\n";
-	std::cerr << solidity::util::jsonPrettyPrint(output) << std::endl;
+	// std::cerr << "### SOLC ###\n";
+	// std::cerr << solidity::util::jsonPrettyPrint(output) << std::endl;
 
 	try
 	{

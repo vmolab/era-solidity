@@ -56,6 +56,8 @@
 #include <algorithm>
 #include <limits>
 
+#include <string>
+
 using namespace solidity;
 using namespace solidity::evmasm;
 using namespace solidity::frontend;
@@ -442,14 +444,18 @@ void ContractCompiler::appendFunctionSelector(ContractDefinition const& _contrac
 	m_context << u256(4) << Instruction::CALLDATASIZE << Instruction::LT;
 	m_context.appendConditionalJumpTo(notFoundOrReceiveEther);
 
-	std::cerr << "---- begin ----\n";
 	for (const auto &hash_fptr : interfaceFunctions) {
 		const auto &hash = hash_fptr.first;
 		const auto &fptr = hash_fptr.second;
 
 		const auto &fname = fptr->declaration().name();
+		std::stringstream ss;
+		unsigned int hashInDecimal;
 
-		std::cerr << "[" << hash << "] : " << fptr->declaration().name() << "\n";
+		ss << std::hex << hash;
+		ss >> hashInDecimal;
+
+		std::cerr << "[" << hash << "] (" << hashInDecimal << ") : " << fptr->declaration().name() << "\n";
 	}
 
 	// retrieve the function signature hash from the calldata
@@ -561,10 +567,6 @@ void ContractCompiler::appendFunctionSelector(ContractDefinition const& _contrac
 		// Consumes the return parameters.
 		appendReturnValuePacker(functionType->returnParameterTypes(), _contract.isLibrary());
 	}
-
-	std::cerr << "---- asm ----\n";
-	std::cerr << m_context.assembly() << "\n";
-	std::cerr << "---- end ----\n";
 }
 
 void ContractCompiler::appendReturnValuePacker(TypePointers const& _typeParameters, bool _isLibrary)
@@ -671,7 +673,7 @@ bool ContractCompiler::visit(FunctionDefinition const& _function)
 	m_context.setModifierDepth(0);
 	solAssert(m_returnTags.empty(), "");
 
-	// Now we need to re-shuffle the stack. For this we keep a record of the stack layout
+	// Now we need to re-shuffle the stack. For thiwe keep a record of the stack layout
 	// that shows the target positions of the elements, where "-1" denotes that this element needs
 	// to be removed from the stack.
 	// Note that the fact that the return arguments are of increasing index is vital for this
